@@ -1,5 +1,5 @@
 const SitemapStream = require('./SitemapStream');
-const getCurrentDateTime = require('./helpers/getCurrentDateTime');
+// const getCurrentDateTime = require('./helpers/getCurrentDateTime');
 
 module.exports = function SitemapRotator(
   maxEntries,
@@ -10,7 +10,7 @@ module.exports = function SitemapRotator(
   const sitemaps = [];
   let count = 0;
   let current = null;
-  const currentDateTime = lastMod ? getCurrentDateTime() : '';
+  // const currentDateTime = lastMod ? getCurrentDateTime() : '';
 
   // return temp sitemap paths
   const getPaths = () =>
@@ -20,7 +20,7 @@ module.exports = function SitemapRotator(
     }, []);
 
   // adds url to stream
-  const addURL = (url, depth) => {
+  const addURL = (url, depth, lastModified) => {
     // create stream if none exists
     if (current === null) {
       current = SitemapStream();
@@ -45,7 +45,7 @@ module.exports = function SitemapRotator(
         : priorityMap[priorityMap.length - 1];
     }
 
-    current.write(url, currentDateTime, changeFreq, priority);
+    current.write(url, lastMod ? lastModified : '', changeFreq, priority);
 
     count += 1;
   };
@@ -60,6 +60,6 @@ module.exports = function SitemapRotator(
   return {
     getPaths,
     addURL,
-    finish,
+    finish
   };
 };

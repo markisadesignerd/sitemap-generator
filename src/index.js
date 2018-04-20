@@ -90,13 +90,16 @@ module.exports = function SitemapGenerator(uri, opts) {
 
   // fetch complete event
   crawler.on('fetchcomplete', (queueItem, page) => {
-    const { url, depth } = queueItem;
+    const { url, depth, stateData } = queueItem;
+    const lastModified = stateData.headers['last-modified']
+      ? new Date(stateData.headers['last-modified']).toISOString()
+      : '';
     // check if robots noindex is present
     if (/<meta(?=[^>]+noindex).*?>/.test(page)) {
       emitter.emit('ignore', url);
     } else {
       emitter.emit('add', url);
-      sitemap.addURL(url, depth);
+      sitemap.addURL(url, depth, lastModified);
     }
   });
 
